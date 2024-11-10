@@ -19,7 +19,7 @@ public class DummyMonster : MonsterClass
 
     public override void Die()
     {
-        
+        Debug.Log("»ç¸Á");
     }
   
 }

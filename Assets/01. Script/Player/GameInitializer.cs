@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Net;
 using Unity.VisualScripting;
 using UnityEngine;
 /// <summary>
@@ -10,6 +11,7 @@ public class GameInitializer : Singleton<GameInitializer>
 
     private PlayerClass playerClass;
     private ICharacterAttack characterAttack;
+   [SerializeField] private Transform weaponTransform;
     private IWeapon currentWeapon;
 
     [SerializeField] private PlayerClassData testData;
@@ -64,11 +66,16 @@ public class GameInitializer : Singleton<GameInitializer>
         }
 
         // 새로운 무기 장착
-        currentWeapon = gameObject.AddComponent(weapon.GetType()) as IWeapon;
+        currentWeapon = weapon;
 
         if (currentWeapon != null)
         {
             characterAttack.EquipWeapon(currentWeapon);
+            
+            currentWeapon.WeaponLoad(weaponTransform);
+
+            playerClass.SelectWeapon(currentWeapon);
+
             Debug.Log($"장착된 무기: {currentWeapon.WeaponName}");
         }
         else

@@ -7,11 +7,11 @@ public abstract class MonsterClass
 {
     private MonsterData monsterData;
 
-    public int CurrentHealth { get; private set; } 
+    public int CurrentHealth { get; private set; }
     public int CurrentDeffense { get; private set; }
     public int CurrentAttackPower { get; private set; }
     public int CurrentAttackSpeed { get; private set; }
-    public int CurrentSpeed { get; private set; }   
+    public int CurrentSpeed { get; private set; }
 
     protected bool isDashing = false;
     public MonsterClass(MonsterData data)
@@ -19,10 +19,10 @@ public abstract class MonsterClass
         monsterData = data;
         InitializeStats();
     }
-   
+
     private void InitializeStats()
     {
-        CurrentHealth = monsterData.initialHp;        
+        CurrentHealth = monsterData.initialHp;
         CurrentAttackPower = monsterData.initialAttackPower;
         CurrentAttackSpeed = monsterData.initialAttackSpeed;
         CurrentSpeed = monsterData.initialSpeed;
@@ -31,9 +31,9 @@ public abstract class MonsterClass
     {
         return monsterData;
     }
-   public string GetName()
+    public string GetName()
     {
-       return monsterData.MONSTERNAME;
+        return monsterData.MONSTERNAME;
     }
     protected virtual void Debuff()
     {
@@ -41,7 +41,7 @@ public abstract class MonsterClass
     }
     protected void ModifyPower(int healthAmount = 0, int defenseAmount = 0, int attackAmount = 0, int attackSpeedAmount = 0, int speedAmount = 0)
     {
-        CurrentHealth += healthAmount;       
+        CurrentHealth += healthAmount;
         CurrentDeffense += defenseAmount;
         CurrentAttackPower += attackAmount;
         CurrentAttackSpeed += attackSpeedAmount;
@@ -57,7 +57,8 @@ public abstract class MonsterClass
             Die();
         }
     }
-    public abstract void Die(); // 죽음 처리 메서드
+    public abstract void Die();
+    
 
     public virtual void SetPosition(Vector3 spawnPosition)
     {

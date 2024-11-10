@@ -1,4 +1,5 @@
 using RPGCharacterAnims.Lookups;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,7 +8,15 @@ public abstract class PlayerClass : IPlayerClass
 {
 
     #region 변수들
+    public enum WeaponType
+    {
+        None,
+        GreatSword,
+        Sword,
+        staff
+    }
 
+    public WeaponType weaponType;
     protected IWeapon currentWeapon; // 공통 IWeapon 타입을 사용
     protected ICharacterAttack characterAttack;
 
@@ -36,9 +45,23 @@ public abstract class PlayerClass : IPlayerClass
         this.playerTransform = playerTransform;
         this.animator = animator;
     }
+    public void ChangeWeapon(IWeapon newWeapon)
+    {
+        currentWeapon = newWeapon;
+        Debug.Log($"Warrior가 {currentWeapon}로 무기를 변경했습니다!");
+
+        // 무기 변경에 따른 능력치를 갱신할 수 있습니다.
+        SelectWeapon(currentWeapon);
+    }
     public void SelectWeapon(IWeapon weapon)
     {
         currentWeapon = weapon;
+        // 무기 이름을 WeaponType으로 변환
+        if (Enum.TryParse(weapon.GetType().Name, out WeaponType parsedWeaponType))
+        {
+            weaponType = parsedWeaponType;
+            Debug.Log($"무기가 변경되었습니다: {weaponType}");
+        }
         Debug.Log($"무기가 변경되었습니다: {weapon.GetType().Name}");
 
         // 무기에 맞는 애니메이터 오버라이딩 적용

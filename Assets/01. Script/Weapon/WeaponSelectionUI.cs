@@ -5,6 +5,7 @@ using UnityEngine;
 public class WeaponSelectionUI : MonoBehaviour
 {
     public GameObject weaponSelectionPanel;
+   [SerializeField] GameObject selectWeapon;
 
     public void ShowWeaponSelection()
     {

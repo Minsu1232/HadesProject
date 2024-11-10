@@ -6,11 +6,11 @@ public abstract class CharacterAttackBase : MonoBehaviour, ICharacterAttack
 {
     protected IWeapon currentWeapon;
     protected Animator animator;
-    public int comboStep = 0;
+    public int comboStep = 0; // 콤보 단계를 관리
     public bool canCombo = false; // 콤보가 가능한지 여부
-    private float comboWindow = 0.5f; // 다음 콤보 입력이 가능한 시간(예: 0.5초)
-    protected float lastAttackTime;
-
+    int hashAttackCount = Animator.StringToHash("AttackCount");
+    bool isAttacking = false;
+    public int AttackCount { get => animator.GetInteger(hashAttackCount); set => animator.SetInteger(hashAttackCount, value); }
     protected virtual void Awake()
     {
         animator = GetComponent<Animator>();
@@ -18,57 +18,72 @@ public abstract class CharacterAttackBase : MonoBehaviour, ICharacterAttack
 
     private void Start()
     {
-        currentWeapon = GameInitializer.Instance.GetCurrentWeapon(); // 현재 장착된 무기를 가져옴
+        currentWeapon = GameInitializer.Instance.GetCurrentWeapon();
     }
+
     public void EquipWeapon(IWeapon weapon)
     {
         currentWeapon = weapon;
         if (currentWeapon != null)
         {
-            currentWeapon.InitializeWeapon(animator); // 무기 초기화 및 애니메이션 오버라이드
+            currentWeapon.InitializeWeapon(animator);
             Debug.Log($"CharacterAttackBase에 {currentWeapon.WeaponName} 무기가 장착되었습니다.");
         }
     }
+
+    private void Update()
+    {
+        // 콤보 단계 확인을 위한 디버깅 로그
+        Debug.Log(comboStep);
+    }
+
+    // 공격을 시작하는 메서드: 애니메이션 트리거를 설정하여 공격을 시작
     public virtual void BasicAttack()
     {
-        // 콤보가 가능하거나 첫 번째 공격일 때만 공격을 실행
-        if (!canCombo || comboStep == 0)
-        {
-            comboStep = (comboStep % 3) + 1;
-            animator.SetTrigger("Attack" + comboStep); // 애니메이션 트리거 설정
-            lastAttackTime = Time.time;
-            canCombo = false; // 콤보 실행 후 일시적으로 비활성화
+       
+            
+            // 첫 번째 공격인 경우 comboStep을 초기화        
+         
+            // 콤보에 맞는 콜라이더 활성화
+            currentWeapon?.ActivateCollider(comboStep);
 
-            // 모든 무기에 공통된 기본 공격 실행
-            currentWeapon?.OnAttackEffect(); // 무기 특유의 추가 효과 호출
-        }
+            // 애니메이션 트리거 설정
+            animator.SetTrigger("Attack");
+           
+
+            canCombo = false; // 콤보 중복 방지
+            Debug.Log("BasicAttack 시작: " + comboStep);
+            
+        
     }
 
-    // 애니메이션 이벤트로 호출되는 메서드: 콤보 유지 시간 설정
-    public void EnableCombo()
+    // 애니메이션 이벤트로 호출: 휘두르기 시작 시 콜라이더 활성화
+    public void ActivateCollider()
     {
-        canCombo = true; // 다음 콤보를 받을 수 있는 상태로 설정
-        lastAttackTime = Time.time;
-        StartCoroutine(ComboResetTimer()); // 일정 시간 후 콤보를 자동으로 초기화
+        currentWeapon?.ActivateCollider(comboStep);
+        Debug.Log("Collider 활성화됨");
     }
 
-    // 일정 시간이 지나면 콤보 초기화
-    private IEnumerator ComboResetTimer()
+    // 애니메이션 이벤트로 호출: 휘두르기 끝 시 콜라이더 비활성화
+    public void DeactivateCollider()
     {
-        yield return new WaitForSeconds(comboWindow);
+        currentWeapon?.DeactivateCollider();
+        Debug.Log("Collider 비활성화됨");
+    }   
 
-        // comboWindow 시간 내에 추가 입력이 없으면 콤보 초기화
-        if (Time.time - lastAttackTime >= comboWindow)
-        {
-            ResetCombo();
-        }
-    }
-
-    public void ResetCombo()
+    public virtual void SkillAttack(int skillIndex)
     {
-        comboStep = 0;
-        canCombo = false;
+        throw new System.NotImplementedException();
     }
-
-    public abstract void SkillAttack(int skillIndex); // 개별 캐릭터가 구현
+    public void AttackFinished(int step)
+    {
+        comboStep = step;  // 전달받은 step 값을 comboStep에 할당
+       
+    }
 }
+    // 콤보를 초기화
+  
+   
+
+    
+

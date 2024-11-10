@@ -8,14 +8,9 @@ public class WarriorClass : PlayerClass
 {
     private int rage; // 분노 게이지, 공격 시 점점 증가해 스킬 강화에 사용 가능
 
-    public enum WeaponType
-    {   
-        None,
-        Sword,
-        Axe
-    }
+  
 
-    private WeaponType currentWeapon = WeaponType.None;
+    private WeaponType selectWeapon = WeaponType.None;
     public WarriorClass(PlayerClassData data, ICharacterAttack characterAttack, Rigidbody rb, Transform playerTransform, Animator animator)
         : base(data,characterAttack ,rb, playerTransform, animator) 
     {
@@ -38,12 +33,7 @@ public class WarriorClass : PlayerClass
     {
        
     }
-    public void ChangeWeapon(WeaponType newWeapon)
-    {
-        currentWeapon = newWeapon;
-        Debug.Log($"Warrior가 {currentWeapon}로 무기를 변경했습니다!");
-        // 무기 변경에 따른 애니메이션이나 능력치를 갱신할 수 있습니다.
-    }
+  
     // Warrior만의 방어력 강화
     public override void TakeDamage(int damage)
     {        

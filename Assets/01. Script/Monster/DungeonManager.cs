@@ -39,10 +39,10 @@ public class DungeonManager : Singleton<DungeonManager>
         monsterFactory.CreateMonster(spawnPosition, monster =>
         {
             Debug.Log($"Monster {monster.GetName()} 생성 완료");
-            // 현재 생성된 몬스터를 필드에 저장
-            currentMonster = monster;
-                       
-            // 추가 로직 수행
+           
+     
+
+            currentMonster = monster; // 현재 생성된 몬스터를 필드에 저장
         });
     }
     public MonsterClass GetMonsterClass()
